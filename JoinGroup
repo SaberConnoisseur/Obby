@@ -1,0 +1,21 @@
+--DIRECTIONS
+--Under ServerScriptService
+--In Game Settings ➡️ Security and Enable Studio Access to API Services
+
+local Players = game:GetService("Players")  --Sets up Services
+local BadgeService = game:GetService("BadgeService") --Sets up Services
+
+local BadgeId = 2138927019 --Insert your badge id    
+local GroupId = 13245547 --Insert your group id
+
+Players.PlayerAdded:Connect(function(player)   --Sets up functions
+	if player:IsInGroup(GroupId) then    --Detects if player is in group
+		local awarded, errorMessage = pcall(function()  --Wrap in pcall if it errors
+			BadgeService:AwardBadge(player.UserId, BadgeId) --Awards Badge
+		end)
+
+		if not awarded then   --If message failed
+			warn("Awarding Badge has failed:", errorMessage) --Error Message
+		end
+	end
+end)
