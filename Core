@@ -1,0 +1,222 @@
+-- Services --
+
+local PlayerService = game:GetService("Players")
+local MarketPlaceService = game:GetService("MarketplaceService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Modules --
+
+local Data = require(script.Data)
+
+-- InitializeData --
+
+Data.initializeData()
+
+-- Variables --
+
+local ReturnData = ReplicatedStorage.Events:WaitForChild("GetData")
+
+local LastStage = 0
+local LastPart = nil
+local Bux = 0
+
+
+
+-- leaderstats --
+
+local function AddL(Player)
+	local PlayerData = Data.awaitData(Player, "PlayerData")
+	
+	local leaderstats = Instance.new("Folder",Player)
+	leaderstats.Name = "leaderstats"
+
+	local Stage = Instance.new("NumberValue",leaderstats)
+	Stage.Name = "Stage"
+
+	local BS = Instance.new("NumberValue",leaderstats)
+	BS.Name = "B$"
+	BS.Value = PlayerData.B
+
+	local Wins = Instance.new("NumberValue",leaderstats)
+	Wins.Name = "Wins"
+	Wins.Value = PlayerData.Wins
+	
+	local LastStage = Instance.new("NumberValue",Player)
+	LastStage.Name = "LastStage"
+	LastStage.Value = 0
+	
+	local LastName = Instance.new("StringValue",Player)
+	LastName.Name = "LastName"
+	LastName.Value = ""
+	
+end
+
+-- Functions --
+
+function ReturnData.OnServerInvoke(Player)
+	local PlayerData = Data.awaitData(Player, "PlayerData")
+	return PlayerData
+end
+
+local function PlayerAdded(Player)
+	Data.registerPlayer(Player)
+	local PlayerData = Data.awaitData(Player, "PlayerData")
+	AddL(Player)
+	game:GetService("BadgeService"):AwardBadge(Player.UserId, 2138926816)
+end
+
+local function PlayerRemoving(Player)
+	print(Player,"Left the server")
+end
+
+local function RevealCorrect(seconds)
+	for _, v in pairs(game.Workspace.Stage:GetDescendants()) do
+		if v:FindFirstChild("Value") then
+			if v.Value.Value == false then
+				print("Correct Part")
+				v.BrickColor = BrickColor.new("Bright green")
+				v.Material = "Neon"
+			end
+		end
+	end
+end
+
+local ClaimDB = false
+
+game.Workspace.RewardChest.Claim.Touched:Connect(function(hit)
+	local Player = game.Players:GetPlayerFromCharacter(hit.Parent)
+	if hit.Parent:FindFirstChild("Humanoid") then
+		if hit.Parent.Humanoid.Health > 0 then
+			if Player.leaderstats.Stage.Value == 40 then
+				if ClaimDB == false then
+					ClaimDB = true
+					local PlayerData = Data.awaitData(Player, "PlayerData")
+					PlayerData.B = PlayerData.B + 1500
+					PlayerData.Wins = PlayerData.Wins + 1
+					Player.leaderstats.Stage.Value = 0
+					Player.leaderstats["B$"].Value = Player.leaderstats["B$"].Value + 1500
+					Player.leaderstats.Wins.Value = Player.leaderstats.Wins.Value + 1
+					Player.LastStage.Value = 0
+					LastPart = nil
+					workspace[hit.Parent.Name].Humanoid.Health = 0
+					ClaimDB = false
+
+				end
+			end
+		end
+	end
+end)
+
+
+local DB2 = false
+
+for _, v in pairs(workspace.Pads:GetDescendants()) do
+	if v.Name == "Pad" then
+		v.Touched:Connect(function(hit)
+			local Humanoid = hit.Parent:FindFirstChildWhichIsA("Humanoid")
+			local Player = game.Players:GetPlayerFromCharacter(hit.Parent)
+			if v.Parent.Name == "GrapplHook" then
+				if Humanoid then
+					if DB2 == false then
+						DB2 = true
+						MarketPlaceService:PromptProductPurchase(Player, 1372705564)
+						DB2 = false
+					end
+				end
+			end
+			if v.Parent.Name == "Hypergun" then
+				if Humanoid then
+					if DB2 == false then
+						DB2 = true
+						MarketPlaceService:PromptProductPurchase(Player, 1372705510)
+						DB2 = false
+					end
+				end
+			end
+			if v.Parent.Name == "Cloud" then
+				if Humanoid then
+					if DB2 == false then
+						DB2 = true
+						MarketPlaceService:PromptProductPurchase(Player, 1372705783)
+						DB2 = false
+					end
+				end
+			end
+			
+			if v.Parent.Name == "Fireworks" then
+				if Humanoid then
+					if DB2 == false then
+						DB2 = true
+						MarketPlaceService:PromptProductPurchase(Player, 13720143715)
+						DB2 = false
+					end
+				end
+			end
+			
+			if v.Parent.Name == "GravityCoil" then
+				if Humanoid then
+					if DB2 == false then
+						DB2 = true
+						MarketPlaceService:PromptProductPurchase(Player, 1372705715)
+						DB2 = false
+					end
+				end
+			end
+		
+			if v.Parent.Name == "FlyingCarpet" then
+				if Humanoid then
+					if DB2 == false then
+						DB2 = true
+						MarketPlaceService:PromptProductPurchase(Player, 1372705071)
+						DB2 = false
+					end
+				end
+			end
+			if v.Parent.Name == "SpeedyCoil" then
+				if Humanoid then
+					if DB2 ==  false then
+						DB2 = true
+						MarketPlaceService:PromptProductPurchase(Player, 1372705654)
+						DB2 = false
+					end
+				end
+			end
+			if v.Parent.Name == "JetPack" then
+				if Humanoid then
+					if DB2 ==  false then
+						DB2 = true
+						MarketPlaceService:PromptProductPurchase(Player, 1372705437)
+						DB2 = false
+					end
+				end
+			end
+			if v.Parent.Name == "Taser" then
+				if Humanoid then
+					if DB2 == false then
+						DB2 = true
+						MarketPlaceService:PromptProductPurchase(Player, 1372719734)
+						DB2 = false
+					end
+				end
+				end
+		end)
+	end
+end
+
+game.Workspace.Baseplate.Touched:Connect(function(hit)
+	if hit.Parent:FindFirstChild("Humanoid") then
+		if hit.Parent.Humanoid.Health > 0 then 
+			local Player = game.Players:GetPlayerFromCharacter(hit.Parent)
+			Player.leaderstats.Stage.Value = 0
+			Player.LastStage.Value = 0
+			hit.Parent.Humanoid.Health = 0
+		end
+	end
+end)
+-- On Join, leave --
+
+PlayerService.PlayerAdded:Connect(PlayerAdded)
+PlayerService.PlayerRemoving:Connect(function(Player)
+	Data.deregisterPlayer(Player)
+	PlayerRemoving(Player)
+end)
