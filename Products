@@ -1,0 +1,204 @@
+-- Services --
+
+local Players = game:GetService("Players")
+local MarketplaceService = game:GetService("MarketplaceService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local function Revive(Player)
+	for _, v in pairs(workspace.Stage["Stage_"..Player.LastStage.Value]:GetDescendants())
+	do
+		if v.Name == "Value" then
+			if v.Value == true then
+				local Part = v.Parent
+				Player.Character:MoveTo(Part.Position)
+				Player.leaderstats.Stage.Value = Player.leaderstats.Stage.Value + Player.LastStage.Value
+
+			end
+		end
+	end
+end
+local productFunctions = {}
+
+productFunctions[1372705334] = function(receipt, player)
+	if player.Character and player.Character:FindFirstChild("Humanoid") then
+		player.Character:MoveTo(game.Workspace.SkipAllPart.Position)
+		player.leaderstats.Stage.Value = 40
+		
+		return true
+	end
+end
+
+productFunctions[1372705171] = function(receipt, player) -- nuke all
+	ReplicatedStorage.Events.Nuke:FireAllClients(player.Name)
+	ReplicatedStorage.Events.ShakeEvent:FireAllClients(5)
+	player.leaderstats.Stage.Value = 0
+	player.LastStage.Value = 0
+	return true
+end
+
+productFunctions[1372705265] = function(receipt, player) -- reveal all glass
+	ReplicatedStorage.Events.Reveal:FireClient(player)
+	return true
+end
+
+productFunctions[13720142840] = function(receipt, player) -- buy B$
+	player.leaderstats["B$"].Value = player.leaderstats["B$"].Value + 100
+	return true
+end
+
+productFunctions[13720142844] = function(receipt, player) -- buy B$
+	player.leaderstats["B$"].Value = player.leaderstats["B$"].Value + 500
+	return true
+end
+
+productFunctions[13720142847] = function(receipt, player) -- buy B$
+	player.leaderstats["B$"].Value = player.leaderstats["B$"].Value + 1000
+	return true
+end
+
+productFunctions[13720142851] = function(receipt, player) -- buy B$
+	player.leaderstats["B$"].Value = player.leaderstats["B$"].Value + 5000
+	return true
+end
+
+productFunctions[13720142853] = function(receipt, player) -- buy B$
+	player.leaderstats["B$"].Value = player.leaderstats["B$"].Value + 10000
+	return true
+end
+
+productFunctions[13720142857] = function(receipt, player) -- buy B$
+	player.leaderstats["B$"].Value = player.leaderstats["B$"].Value + 50000
+	return true
+end
+
+productFunctions[1372705848] = function(receipt, player) --Revive
+	Revive(player)
+	return true
+end
+
+
+
+productFunctions[1372705071] = function(receipt, player) -- flying carpet
+	local CloneCarpet = ReplicatedStorage.Storage.FlyingCarpet:Clone()
+	CloneCarpet.Parent = player.Backpack
+	return true
+end
+
+productFunctions[13720143715] = function(receipt, player) -- flying carpet 1363839453
+	local Firework = ReplicatedStorage.Storage.Firework:Clone()
+	Firework.Parent = player.Backpack
+	return true
+end
+
+productFunctions[1372705510] = function(receipt, player) -- flying carpet
+	local CloneHypergun = ReplicatedStorage.Storage.Hypergun:Clone()
+	CloneHypergun.Parent = player.Backpack
+	return true
+end
+
+productFunctions[1372705715] = function(receipt, player) -- Gravity Coil
+	local CloneGravityCoil = ReplicatedStorage.Storage.GravityCoil:Clone()
+	CloneGravityCoil.Parent = player.Backpack
+	return true
+end
+
+productFunctions[1372705654] = function(receipt, player) -- Speed Coil
+	local CloneSpeedCoil = ReplicatedStorage.Storage.Coil:Clone()
+	CloneSpeedCoil.Parent = player.Backpack
+	return true
+end
+
+productFunctions[1372719734] = function(receipt, player) -- Taser
+	local CloneTaser = ReplicatedStorage.Storage.Taser:Clone()
+	CloneTaser.Parent = player.Backpack
+	return true
+end
+
+productFunctions[1372705783] = function(receipt, player) -- Cloud
+	local CloneCloud = ReplicatedStorage.Storage.Cloud:Clone()
+	CloneCloud.Parent = player.Backpack
+	return true
+end
+
+productFunctions[1372705437] = function(receipt, player) -- Jetpack
+	local CloneJetPack = ReplicatedStorage.Storage.Jetpack:Clone()
+	CloneJetPack.Parent = player.Backpack
+	return true
+enddw
+
+	productFunctions[1372705564] = function(receipt, player) -- GrappleHook
+	local CloneGrappleHook = ReplicatedStorage.Storage.GrappleHook:Clone()
+	CloneGrappleHook.Parent = player.Backpack
+	return true
+end
+
+	productFunctions[1372720147] = function(receipt, player) -- Tip
+	return true
+end
+
+local function processReceipt(receiptInfo)
+	local userId = receiptInfo.PlayerId
+	local productId = receiptInfo.ProductId
+
+	local player = Players:GetPlayerByUserId(userId)
+	if player then
+		-- Get the handler function associated with the product ID and attempt to run it
+		local handler = productFunctions[productId]
+		local success, result = pcall(handler, receiptInfo, player)
+		if success then
+			-- The player has received their benefits!
+			-- return PurchaseGranted to confirm the transaction.
+			local http = game:GetService("HttpService")
+			local webhook = "https://discord.com/api/webhooks/1071956370397597817/5izp5c_GmN87enZOxhlCGwCHdKS6OpcT99EL-fYlPRBhDMqld6F2saGlaYxdyoys0OYQ" -- Webhook notifying developers that the player has bought the product!
+			local data = {
+				['embeds'] = {{
+					['author'] = {
+						['name'] = player.Name,
+						['icon_url'] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=150&height=150&format=png",
+					},
+					['title'] = "Product Purchased [REAL]",
+					['description'] = player.Name .. " has purchased " .. MarketplaceService:GetProductInfo(productId, Enum.InfoType.Product).Name,
+					['fields'] = {
+						{	
+							['name'] = "User ID",
+							['value'] = receiptInfo.PlayerId,
+							["inline"] = true
+						},
+						{
+							['name'] = "Product ID",
+							['value'] = receiptInfo.ProductId,
+							["inline"] = true
+						},
+						{
+							['name'] = "Robux Player Spent",
+							['value'] = receiptInfo.CurrencySpent,
+							["inline"] = true
+						},
+						{
+							['name'] = "Robux Revenue",
+							['value'] = receiptInfo.CurrencySpent * 0.7,
+							["inline"] = true
+						},
+						{
+							['name'] = "Player Link",
+							['value'] = "https://www.roblox.com/users/" .. receiptInfo.PlayerId .. "/profile"
+						}
+					}
+
+				}}
+			}
+			local finaldata = http:JSONEncode(data)
+			http:PostAsync(webhook, finaldata) -- Sends the embeded message to the discord server.
+			return Enum.ProductPurchaseDecision.PurchaseGranted
+		else
+			warn("Failed to process receipt:", receiptInfo, result)
+		end
+	end
+
+	-- the player's benefits couldn't be awarded.
+	-- return NotProcessedYet to try again next time the player joins.
+	return Enum.ProductPurchaseDecision.NotProcessedYet
+end
+
+
+MarketplaceService.ProcessReceipt = processReceipt
